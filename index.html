@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profile</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Mono:wght@400;700&family=Fira+Code:wght@400;500;700&display=swap">
+
+<script>
+/* ======================================================================
+   CONFIG — EDIT ONLY THIS BLOCK. You never need to touch the HTML/CSS.
+   ====================================================================== */
+const CONFIG = {
+  // ---- Identity ----
+  name: "𝐚𝐮𝐫𝐞𝐥𝐢𝐣𝐚",
+  username: "@meow",
+  tabTitle: "𝓏𝑜𝓊𝓁𝓁 ㅤᓚᘏᗢ",
+  profilePicture: "https://i.postimg.cc/0NK4C37w/IMG-3645.jpg", // square, 400x400+
+  banner: "https://i.postimg.cc/qq2hXkvS/IMG-0646.jpg",            // image URL (e.g. 1500x500) or null for animated gradient
+
+  // ---- Bio / status ----
+  bio: "• no one cares, until you're rich, pretty or 𝗱𝗲𝗮𝗱 •",
+  statusText: "currently: gooning",   // small line under the bio ("" to hide)
+
+  // ---- Theme ----
+  accentColor: "#A3BAD4",                       // main glow / highlight colour
+  backgroundColor: "#7A7A7A",                   // page base colour
+  gradientColors: ["#C9C9C9", "#828282", "#C9C9C9"], // animated background blend
+  font: "'JetBrains Mono', 'Fira Code', monospace",  // any CSS font-family string
+  cardOpacity: 0,                            // glass panel strength (0.2 – 0.9)
+  cardBlur: 7,                                 // glass blur in px
+
+  // ---- Toggles ----
+  showBio: true,
+  showStatusDot: true,
+  statusDotColor: "#A2BFDE",                    // green = online, "#f59e0b" = idle, "#ef4444" = busy
+  particles: true,                              // master switch for the background effect
+  particleCount: 25,                            // hard-capped at 150
+  typewriter: true,
+  showViews: true,                              // per-browser counter (cosmetic, see README)
+  startingViews: 24,                          // number the counter starts from
+  tiltStrength: 10,                              // how far the card turns toward the mouse, in degrees (0 = off, 12 = strong)
+
+  // ---- Layout: "classic" (banner card) | "minimal" (no card, centred, lazerdim-style)
+  //      | "wide" (left-aligned, 2-column links) | "hero" (banner becomes full-page background)
+  layout: "wide",
+
+  // ---- "Click to enter" splash (also needed so browsers allow music to autoplay) ----
+  splash: { enabled: true, text: "click my page!" },
+
+  // ---- Background music: a file next to index.html OR a direct .mp3 link ----
+  music: {
+    enabled: true,
+    src: "background_music.mp3",    // or "https://example.com/song.mp3"
+    title: "⊹ ˖ Ი𐑼",
+    artist: "",
+    volume: 0.7,                    // 0 – 1
+    loop: true,
+    showPlayer: true                // false = music plays but no widget
+  },
+
+  // ---- Custom cursor: "ring" (dot + trailing ring) | "image" | "default" ----
+  cursor: { style: "default", image: "cursor.png", size: 28 },  // image: PNG/CUR url, ~16x16 px
+
+  // ---- Background photo / video (png, jpg, webp, gif, mp4, webm). null = none ----
+  bgMedia: { src: "background.mp4", dim: 0.35, blur: 0 },     // dim 0–1 darkens it, blur in px
+
+  // ---- Background effect (drawn over the background, needs particles: true) ----
+  // "stars" | "snow" | "rain" | "leaves" | "petals" | "embers" | "fireflies" | "bubbles" | "none"
+  backgroundEffect: "snow",
+
+  // ---- Username effect ----
+  // "none" | "typewriter" | "glitch" | "glow" | "neon" | "rainbow" | "gradient" | "shimmer" | "flicker" | "wave"
+  nameEffect: "glow", 
+  nameColor: "#ecebf5",          // text colour (also base of shimmer)
+  nameColor2: "#22d3ee",         // second colour for "gradient" (uses nameColor as the first)
+  nameGlow: "#A2BFDE",           // glow colour for "glow" and "neon"
+
+  // ---- Card border ----
+  // style: "default" | "none" | "solid" | "dashed" | "dotted" | "double" | "neon" | "gradient" | "animated" | "rainbow"
+  border: { style: "animated", width: 4, color: "#8DB9EB", color2: "#40454D", radius: 24, glow: false },
+
+  // ---- Badges next to the name (small icons, label shows on hover) ----
+  // Use a preset: staff, moderator, verified, owner, developer, premium, donor, booster,
+  //   early, bughunter, og, designer, gamer, partner, vip, discord
+  // ...or make your own: { label, icon: "fa-solid fa-...", color } / { label, image: "url" } / { label, text: "OG", color }
+  badges: [
+    { preset: "owner" },
+    { preset: "verified" },
+    { preset: "og" },
+    { preset: "vip" },
+  ],
+
+  // ---- Signature badges: bigger pills with visible text under your handle (haunt.gg style) ----
+  // Same fields as badges. Add as many as you like, with an icon or your own image.
+  signatureBadges: [
+    { label: "ᶻ 𝗓 𐰁 (_  _ マ⟆", icon: "fa-solid fa-moon", color: "#020202" },
+    { label: "°❀.ೃ࿔*", icon: "fa-solid fa-star", color: "#020202" }
+    // { label: "My crew", image: "crew-logo.png", color: "#22d3ee" }
+  ],
+
+  // ---- Social icons (add / remove / reorder freely) ----
+  // platform: discord, twitter, x, instagram, tiktok, spotify, github, youtube,
+  //   telegram, twitch, reddit, linkedin, facebook, snapchat, steam, soundcloud,
+  //   pinterest, whatsapp, email, website, paypal, kofi, patreon, bluesky,
+  //   threads, mastodon, gitlab, codepen, medium, behance, dribbble, tumblr
+  socials: [
+    { platform: "tiktok",   url: "https://tiktok.com/@zoullxz" },
+    { platform: "discord",  url: "https://discord.com/users/1272717310355837100" },
+    { platform: "telegram", url: "https://t.me/zoullxz" },
+    { platform: "twitch",    url: "https://twitch.tv/zoullxz" },
+    { platform: "spotify",   url: "https://open.spotify.com/user/313cgaryod33sfrwqkqo2ca4zv5u" },
+  ],
+
+	
+};
+/* ====================== END OF CONFIG ====================== */
+</script>
+
+<style>
+/* ---------- Theme variables (filled from CONFIG by JS) ---------- */
+:root{
+  --accent:#212121; --bg:#07070d; --font:'JetBrains Mono',monospace;
+  --card-a:.55; --blur:22px; --text:#ecebf5; --muted:#8c8aa3;
+  --g1:#1b1040; --g2:#07070d; --g3:#0d1f3a;
+  --accent-soft:color-mix(in srgb,var(--accent) 35%,transparent);
+  --accent-faint:color-mix(in srgb,var(--accent) 14%,transparent);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  font-family:var(--font); color:var(--text); background:var(--bg);
+  display:flex; justify-content:center; align-items:center;
+  min-height:100vh; padding:32px 16px; overflow-x:hidden; line-height:1.5;
+}
+
+/* ---------- Animated background ---------- */
+.bg{position:fixed;inset:0;z-index:-4;
+  background:linear-gradient(135deg,var(--g1),var(--g2),var(--g3),var(--g2));
+  background-size:300% 300%; animation:drift 22s ease infinite}
+@keyframes drift{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+.bg::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,var(--accent-faint),transparent 60%),
+             radial-gradient(ellipse at 50% 100%,rgba(0,0,0,.7),transparent 70%)}
+#stars{position:fixed;inset:0;z-index:-1;pointer-events:none}
+
+/* ---------- Glass card ---------- */
+.card{
+  width:100%; max-width:770px; position:relative; border-radius:24px;
+  background:rgba(14,14,24,var(--card-a));
+  backdrop-filter:blur(var(--blur)) saturate(140%);
+  -webkit-backdrop-filter:blur(var(--blur)) saturate(140%);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.8), 0 0 60px -25px var(--accent), inset 0 1px 0 rgba(255,255,255,.07);
+  transform-style:preserve-3d; transition:transform .15s ease-out;
+  overflow:hidden;
+}
+/* thin accent line across the top edge */
+.card::before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;z-index:3;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+
+/* ---------- Banner & avatar ---------- */
+.banner{height:150px;background:linear-gradient(120deg,var(--accent),var(--g1) 55%,var(--g3));
+  background-size:200% 200%;animation:drift 12s ease infinite;position:relative}
+.banner.img{background-size:cover;background-position:center;animation:none}
+.banner::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(14,14,24,.85))}
+.avatar-wrap{position:relative;width:112px;height:112px;margin:-56px auto 0;z-index:2}
+.avatar{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#10101c;
+  border:3px solid rgba(14,14,24,.95);box-shadow:0 0 0 2px var(--accent),0 0 32px var(--accent-soft)}
+.dot{position:absolute;right:6px;bottom:6px;width:20px;height:20px;border-radius:50%;
+  background:var(--dot,#22c55e);border:3px solid #0e0e18;animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 var(--dot)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+
+/* ---------- Body ---------- */
+.body{padding:16px 28px 28px;text-align:center}
+h1{font-size:1.7rem;font-weight:700;letter-spacing:-.02em}
+.handle{color:var(--accent);font-size:.9rem;margin-top:2px}
+.bio{margin-top:14px;color:#cfcde0;font-size:.88rem;min-height:2.6em}
+.cursor{display:inline-block;width:.55em;height:1em;background:var(--accent);vertical-align:-.15em;margin-left:2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.status{margin-top:8px;color:var(--muted);font-size:.76rem}
+
+/* ---------- Social icons ---------- */
+.socials{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:22px 0 20px}
+.socials a{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;font-size:1.15rem;
+  color:var(--muted);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  text-decoration:none;transition:transform .25s cubic-bezier(.3,1.6,.5,1),color .2s,box-shadow .25s,border-color .25s,background .25s}
+.socials a:hover,.socials a:focus-visible{color:#fff;transform:translateY(-4px) scale(1.12);outline:none;
+  background:var(--accent-faint);border-color:var(--accent);box-shadow:0 8px 26px -4px var(--accent)}
+
+/* ---------- Link buttons ---------- */
+.links{display:flex;flex-direction:column;gap:10px}
+.links a{display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:14px;text-decoration:none;
+  color:var(--text);font-size:.88rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  position:relative;overflow:hidden;transition:transform .25s,border-color .25s,box-shadow .25s,background .25s}
+.links a i{width:20px;text-align:center;color:var(--accent);transition:transform .25s}
+.links a span{flex:1;text-align:left}
+.links a .go{color:var(--muted);font-size:.75rem;opacity:0;transform:translateX(-6px);transition:.25s}
+.links a:hover,.links a:focus-visible{transform:translateY(-2px);outline:none;border-color:var(--accent);
+  background:var(--accent-faint);box-shadow:0 10px 30px -10px var(--accent)}
+.links a:hover i{transform:scale(1.2) rotate(-6deg)}
+.links a:hover .go{opacity:1;transform:none}
+
+.views{margin-top:22px;color:var(--muted);font-size:.72rem}
+.views i{margin-right:6px;color:var(--accent)}
+
+/* ---------- One orchestrated entrance ---------- */
+.card{animation:enter .9s cubic-bezier(.2,.8,.2,1) both}
+.body>*{animation:rise .7s cubic-bezier(.2,.8,.2,1) both}
+.body>*:nth-child(1){animation-delay:.25s}.body>*:nth-child(2){animation-delay:.32s}
+.body>*:nth-child(3){animation-delay:.42s}.body>*:nth-child(4){animation-delay:.52s}
+.body>*:nth-child(5){animation-delay:.62s}.body>*:nth-child(6){animation-delay:.72s}
+.body>*:nth-child(7){animation-delay:.82s}
+@keyframes enter{from{opacity:0;transform:translateY(24px) scale(.97)}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+
+@media (max-width:480px){.body{padding:14px 20px 24px}.banner{height:120px}h1{font-size:1.5rem}.socials a{width:42px;height:42px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- Splash, badges, player, cursor, layouts ---------- */
+body.locked{overflow:hidden}
+body.locked .card,body.locked .body>*{animation-play-state:paused}
+#splash{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(5,5,10,.82);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);cursor:pointer;transition:opacity .7s,visibility .7s}
+#splash.out{opacity:0;visibility:hidden}
+#splash span{font-size:.95rem;letter-spacing:.2em;color:var(--muted);animation:fade 2.4s ease-in-out infinite}
+@keyframes fade{50%{opacity:.35;color:var(--accent)}}
+h1{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.nm{display:inline-block}
+.nm.fx-none:hover{animation:glitch .35s steps(2) 2}
+@keyframes glitch{0%{text-shadow:2px 0 var(--accent),-2px 0 #0ff;transform:translateX(1px)}50%{text-shadow:-2px 0 var(--accent),2px 0 #f0f;transform:translateX(-1px)}100%{text-shadow:none;transform:none}}
+.badges{display:inline-flex;gap:6px}
+.badge{position:relative;min-width:26px;height:26px;padding:0 4px;display:grid;place-items:center;border-radius:8px;font-size:.8rem;color:#fff;
+  background:color-mix(in srgb,var(--b) 80%,#000);box-shadow:0 0 14px -2px var(--b)}
+.badge img{width:18px;height:18px;object-fit:contain}
+.badge::after{content:attr(data-tip);position:absolute;top:135%;left:50%;transform:translateX(-50%) translateY(-4px);white-space:nowrap;
+  font:400 .68rem var(--font);padding:4px 8px;border-radius:6px;background:rgba(0,0,0,.8);border:1px solid rgba(255,255,255,.1);
+  opacity:0;pointer-events:none;transition:.2s;z-index:5}
+.badge:hover::after{opacity:1;transform:translateX(-50%)}
+.player{margin-top:20px;display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);text-align:left}
+.player button{width:36px;height:36px;border-radius:50%;border:0;background:var(--accent);color:#fff;cursor:pointer;flex:none;transition:transform .2s,box-shadow .2s}
+.player button:hover{transform:scale(1.1);box-shadow:0 0 20px var(--accent)}
+.pinfo{flex:1;min-width:0;font-size:.74rem}
+.pinfo b{display:block;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pinfo small{color:var(--muted)}
+.player input[type=range]{-webkit-appearance:none;appearance:none;height:4px;border-radius:4px;background:rgba(255,255,255,.12);outline:none;cursor:pointer}
+.player input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--accent)}
+.player input[type=range]::-moz-range-thumb{width:11px;height:11px;border:0;border-radius:50%;background:var(--accent)}
+#seek{width:100%;margin-top:6px;display:block}
+#vol{width:60px;flex:none}
+.player>i{color:var(--muted);font-size:.75rem}
+@media(max-width:400px){#vol,.player>i{display:none}}
+.cur{position:fixed;top:0;left:0;pointer-events:none;z-index:100;border-radius:50%;will-change:transform}
+.cur.dot{width:6px;height:6px;margin:-3px 0 0 -3px;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.cur.ring{border:1.5px solid var(--accent);transition:scale .2s,background .2s}
+.cur.ring.hot{scale:1.6;background:var(--accent-faint)}
+html.cc *{cursor:none!important}
+/* layouts (set with CONFIG.layout) */
+[data-layout=minimal] .card{background:none;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;max-width:400px;overflow:visible}
+[data-layout=minimal] .card::before,[data-layout=minimal] .banner{display:none}
+[data-layout=minimal] .avatar-wrap{margin-top:0}
+[data-layout=wide] .card{max-width:720px}
+[data-layout=wide] .avatar-wrap{margin:-56px 0 0 28px}
+[data-layout=wide] .body{text-align:left}
+[data-layout=wide] h1,[data-layout=wide] .socials{justify-content:flex-start}
+[data-layout=wide] .links{display:grid;grid-template-columns:1fr 1fr}
+[data-layout=hero] .banner{position:fixed;inset:0;height:auto;z-index:-3;opacity:.4;animation:none}
+[data-layout=hero] .avatar-wrap{margin-top:28px}
+@media(max-width:600px){[data-layout=wide] .links{grid-template-columns:1fr}[data-layout=wide] .avatar-wrap{margin:-56px auto 0}}
+
+/* ---------- Background media ---------- */
+#bgm{position:fixed;inset:0;z-index:-3;overflow:hidden}
+#bgm>*{width:100%;height:100%;object-fit:cover;display:block}
+#bgm::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,var(--dim,.5))}
+/* ---------- Username effects ---------- */
+.nm{color:var(--nc,#ecebf5);min-height:1.2em}
+.fx-glow{text-shadow:0 0 10px var(--nglow),0 0 28px var(--nglow)}
+.fx-neon{color:#fff;text-shadow:0 0 4px #fff,0 0 10px var(--nglow),0 0 22px var(--nglow),0 0 44px var(--nglow)}
+.fx-flicker{animation:flick 3.2s infinite}
+@keyframes flick{0%,18%,22%,60%,64%,100%{opacity:1}20%,62%{opacity:.35}}
+.fx-rainbow,.fx-gradient,.fx-shimmer{background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:slide 4s linear infinite}
+.fx-rainbow{background-image:linear-gradient(90deg,#f43f5e,#f59e0b,#22c55e,#06b6d4,#8b5cf6,#f43f5e)}
+.fx-gradient{background-image:linear-gradient(90deg,var(--nc),var(--nc2),var(--nc))}
+.fx-shimmer{background-size:250% 100%;background-image:linear-gradient(110deg,var(--nc) 38%,#fff 50%,var(--nc) 62%);animation-duration:2.6s}
+@keyframes slide{to{background-position:-200% 0}}
+.fx-glitch{position:relative}
+.fx-glitch::before,.fx-glitch::after{content:attr(data-text);position:absolute;inset:0;overflow:hidden;clip-path:inset(0 0 100% 0)}
+.fx-glitch::before{color:#0ff;animation:gl 2.4s infinite steps(1)}
+.fx-glitch::after{color:var(--accent);animation:gl 2.4s .12s infinite steps(1)}
+@keyframes gl{0%,88%,100%{transform:none;clip-path:inset(0 0 100% 0)}90%{transform:translate(-4px,0);clip-path:inset(15% 0 55% 0)}94%{transform:translate(4px,0);clip-path:inset(60% 0 8% 0)}97%{transform:translate(-2px,0);clip-path:inset(35% 0 35% 0)}}
+.fx-typewriter::after{content:"";display:inline-block;width:.1em;height:.95em;background:var(--accent);margin-left:5px;vertical-align:-.1em;animation:blink 1s steps(1) infinite}
+.wv{display:inline-block;animation:wave 1.4s ease-in-out infinite}
+@keyframes wave{50%{transform:translateY(-6px)}}
+/* ---------- Signature badges ---------- */
+.sigs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:12px}
+.sig{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;font-size:.72rem;color:#fff;
+  background:color-mix(in srgb,var(--b) 16%,transparent);border:1px solid color-mix(in srgb,var(--b) 55%,transparent);
+  box-shadow:0 0 16px -6px var(--b);transition:transform .2s,box-shadow .2s}
+.sig:hover{transform:translateY(-2px);box-shadow:0 6px 20px -4px var(--b)}
+.sig i{color:var(--b)}.sig img{width:16px;height:16px;object-fit:contain}.sig b{font-weight:700;color:var(--b)}.sig em{font-style:normal}
+.badge b{font-size:.62rem}
+[data-layout=wide] .sigs{justify-content:flex-start}
+/* ---------- Card borders ---------- */
+.card.bd-none{border:0}
+.card.bd-solid,.card.bd-dashed,.card.bd-dotted,.card.bd-double,.card.bd-neon{border:var(--bw) solid var(--bc)}
+.card.bd-dashed{border-style:dashed}.card.bd-dotted{border-style:dotted}.card.bd-double{border-style:double;border-width:calc(var(--bw)*2)}
+.card.bd-neon{box-shadow:0 0 12px var(--bc),0 0 44px -4px var(--bc),inset 0 0 16px -6px var(--bc)}
+.card.bd-gradient::after,.card.bd-animated::after,.card.bd-rainbow::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:var(--bw);
+  pointer-events:none;z-index:4;background:linear-gradient(135deg,var(--bc),var(--bc2),var(--bc));background-size:300% 300%;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+.card.bd-animated::after{animation:drift 5s linear infinite}
+.card.bd-rainbow::after{background-image:linear-gradient(90deg,#f43f5e,#f59e0b,#22c55e,#06b6d4,#8b5cf6,#f43f5e);background-size:300% 100%;animation:drift 5s linear infinite}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<canvas id="stars"></canvas>
+<div id="splash"><span></span></div>
+
+<!-- The whole card is built by the script at the bottom from CONFIG -->
+<main class="card" id="card">
+  <div class="banner" id="banner"></div>
+  <div class="avatar-wrap">
+    <img class="avatar" id="avatar" alt="Profile picture">
+    <span class="dot" id="dot" hidden></span>
+  </div>
+  <div class="body" id="body"></div>
+</main>
+
+<script>
+(() => {
+  const C = CONFIG, $ = id => document.getElementById(id), root = document.documentElement.style;
+
+  /* ---------- 1. Apply theme ---------- */
+  root.setProperty('--accent', C.accentColor);
+  root.setProperty('--bg', C.backgroundColor);
+  root.setProperty('--font', C.font);
+  root.setProperty('--card-a', C.cardOpacity);
+  root.setProperty('--blur', C.cardBlur + 'px');
+  (C.gradientColors || []).slice(0, 3).forEach((c, i) => root.setProperty('--g' + (i + 1), c));
+  document.title = C.tabTitle || C.name;
+  document.body.style.background = C.backgroundColor;
+  document.body.dataset.layout = C.layout || 'classic';
+  root.setProperty('--nc', C.nameColor || '#ecebf5'); root.setProperty('--nc2', C.nameColor2 || '#22d3ee'); root.setProperty('--nglow', C.nameGlow || C.accentColor);
+  /* card border */
+  const B = C.border || {}, card0 = document.getElementById('card');
+  if (B.style && B.style !== 'default') {
+    card0.classList.add('bd-' + B.style);
+    card0.style.setProperty('--bw', (B.width || 2) + 'px'); card0.style.setProperty('--bc', B.color || C.accentColor); card0.style.setProperty('--bc2', B.color2 || '#22d3ee');
+  }
+  if (B.radius != null) card0.style.borderRadius = B.radius + 'px';
+  if (B.glow) card0.style.boxShadow = `0 30px 80px -20px rgba(0,0,0,.8), 0 0 40px -2px ${B.color || C.accentColor}`;
+
+  /* ---------- 2. Banner, avatar, status dot ---------- */
+  if (C.layout === 'hero') document.body.prepend($('banner'));   // banner becomes page background
+  if (C.banner) { $('banner').classList.add('img'); $('banner').style.backgroundImage = `url("${C.banner}")`; }
+  $('avatar').src = C.profilePicture;
+  $('avatar').onerror = function () { this.onerror = null; this.src = 'data:image/svg+xml,' + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#10101c"/><text x="50" y="64" font-size="46" text-anchor="middle" fill="${C.accentColor}" font-family="monospace">${(C.name||'?')[0]}</text></svg>`); };
+  if (C.showStatusDot) { $('dot').hidden = false; $('dot').style.setProperty('--dot', C.statusDotColor); }
+
+  /* ---------- 3. Icon map: platform name -> Font Awesome classes + brand colour ---------- */
+  const ICONS = {
+    discord:'fa-brands fa-discord', twitter:'fa-brands fa-twitter', x:'fa-brands fa-x-twitter',
+    instagram:'fa-brands fa-instagram', tiktok:'fa-brands fa-tiktok', spotify:'fa-brands fa-spotify',
+    github:'fa-brands fa-github', youtube:'fa-brands fa-youtube', telegram:'fa-brands fa-telegram',
+    twitch:'fa-brands fa-twitch', reddit:'fa-brands fa-reddit-alien', linkedin:'fa-brands fa-linkedin-in',
+    facebook:'fa-brands fa-facebook-f', snapchat:'fa-brands fa-snapchat', steam:'fa-brands fa-steam',
+    soundcloud:'fa-brands fa-soundcloud', pinterest:'fa-brands fa-pinterest-p', whatsapp:'fa-brands fa-whatsapp',
+    email:'fa-solid fa-envelope', website:'fa-solid fa-globe', paypal:'fa-brands fa-paypal',
+    kofi:'fa-solid fa-mug-hot', patreon:'fa-brands fa-patreon', bluesky:'fa-brands fa-bluesky',
+    threads:'fa-brands fa-threads', mastodon:'fa-brands fa-mastodon', gitlab:'fa-brands fa-gitlab',
+    codepen:'fa-brands fa-codepen', medium:'fa-brands fa-medium', behance:'fa-brands fa-behance',
+    dribbble:'fa-brands fa-dribbble', tumblr:'fa-brands fa-tumblr'
+  };
+  const esc = s => String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  const ext = u => /^https?:/i.test(u) ? ' target="_blank" rel="noopener noreferrer"' : '';
+
+  /* ---------- 4. Build card content ---------- */
+  /* badge presets: [icon, colour, default label] */
+  const PRESETS = {
+    staff:['fa-solid fa-shield-halved','#5865F2','Staff'], moderator:['fa-solid fa-gavel','#5865F2','Moderator'],
+    verified:['fa-solid fa-circle-check','#3b82f6','Verified'], owner:['fa-solid fa-crown','#f59e0b','Owner'],
+    developer:['fa-solid fa-code','#22c55e','Developer'], premium:['fa-solid fa-gem','#a855f7','Premium'],
+    donor:['fa-solid fa-heart','#ec4899','Donor'], booster:['fa-solid fa-rocket','#f472b6','Booster'],
+    early:['fa-solid fa-seedling','#34d399','Early supporter'], bughunter:['fa-solid fa-bug','#f97316','Bug hunter'],
+    og:['fa-solid fa-star','#eab308','OG'], designer:['fa-solid fa-palette','#ec4899','Designer'],
+    gamer:['fa-solid fa-gamepad','#06b6d4','Gamer'], partner:['fa-solid fa-handshake','#14b8a6','Partner'],
+    vip:['fa-solid fa-fire','#ef4444','VIP'], discord:['fa-brands fa-discord','#5865F2','Discord']
+  };
+  const mkBadge = (b, sig) => {
+    const p = PRESETS[b.preset] || [], color = b.color || p[1] || C.accentColor, label = b.label || p[2] || '';
+    const inner = b.image ? `<img src="${esc(b.image)}" alt="">` : (b.text && !b.icon) ? `<b>${esc(b.text)}</b>` : `<i class="${esc(b.icon || p[0] || 'fa-solid fa-shield')}"></i>`;
+    return sig ? `<span class="sig" style="--b:${color}">${inner}<em>${esc(label)}</em></span>`
+               : `<span class="badge" data-tip="${esc(label)}" style="--b:${color}">${inner}</span>`;
+  };
+  const badgesHtml = (C.badges || []).length ? '<span class="badges">' + C.badges.map(b => mkBadge(b)).join('') + '</span>' : '';
+  const sigsHtml = (C.signatureBadges || []).length ? '<div class="sigs">' + C.signatureBadges.map(b => mkBadge(b, true)).join('') + '</div>' : '';
+  const nf = C.nameEffect || 'none';
+  const M = C.music || {};
+  const playerHtml = (M.enabled && M.src && M.showPlayer !== false) ? `<div class="player"><button id="pp" aria-label="Play or pause"><i class="fa-solid fa-play"></i></button><div class="pinfo"><b id="ptitle">${esc(M.title || 'Now playing')}</b><small>${esc(M.artist || '')}</small><input id="seek" type="range" min="0" max="1000" value="0" aria-label="Seek"></div><i class="fa-solid fa-volume-high"></i><input id="vol" type="range" min="0" max="100" aria-label="Volume"></div>` : '';
+  let html = `<h1><span class="nm fx-${nf}" data-text="${esc(C.name)}">${esc(C.name)}</span>${badgesHtml}</h1><div class="handle">${esc(C.username)}</div>${sigsHtml}`;
+  html += (C.showBio && C.bio) ? `<p class="bio" id="bio">${C.typewriter ? '' : esc(C.bio)}</p>` : '<span></span>';
+  html += C.statusText ? `<div class="status">${esc(C.statusText)}</div>` : '<span></span>';
+
+  html += '<nav class="socials" aria-label="Social links">' + (C.socials || []).map(s => {
+    const p = String(s.platform).toLowerCase();
+    const url = p === 'email' && !/^mailto:/i.test(s.url) ? 'mailto:' + s.url : s.url;
+    return `<a href="${esc(url)}"${ext(url)} aria-label="${esc(p)}" title="${esc(p)}"><i class="${ICONS[p] || 'fa-solid fa-link'}"></i></a>`;
+  }).join('') + '</nav>';
+
+  html += '<div class="links">' + (C.links || []).map(l =>
+    `<a href="${esc(l.url)}"${ext(l.url)}><i class="${esc(l.icon || 'fa-solid fa-link')}"></i><span>${esc(l.label)}</span><i class="go fa-solid fa-arrow-up-right-from-square"></i></a>`
+  ).join('') + '</div>';
+
+  html += playerHtml;
+  if (C.showViews) html += `<div class="views"><i class="fa-regular fa-eye"></i><span id="views">0</span> views</div>`;
+  $('body').innerHTML = html;
+
+  /* ---------- 4a. Username effects that need JS ---------- */
+  const nmEl = $('body').querySelector('.nm');
+  if (nf === 'wave') nmEl.innerHTML = [...C.name].map((ch, i) => `<span class="wv" style="animation-delay:${i * .08}s">${ch === ' ' ? '&nbsp;' : esc(ch)}</span>`).join('');
+  if (nf === 'typewriter') {
+    let i = 0, d = 1; const t = C.name;
+    (function step() {
+      nmEl.textContent = t.slice(0, i);
+      if (d > 0 && i === t.length) { d = -1; return setTimeout(step, 1800); }
+      if (d < 0 && i === 0) { d = 1; return setTimeout(step, 500); }
+      i += d; setTimeout(step, d > 0 ? 110 : 55);
+    })();
+  }
+
+  /* ---------- 4b. Music + player ---------- */
+  let audio = null;
+  const startMusic = () => { if (audio && audio.paused) audio.play().catch(() => {}); };
+  if (M.enabled && M.src) {
+    audio = new Audio(M.src); audio.loop = M.loop !== false; audio.volume = M.volume ?? 0.4;
+    if (playerHtml) {
+      const pp = $('pp'), ic = pp.firstChild, seek = $('seek'), vol = $('vol');
+      vol.value = audio.volume * 100;
+      pp.onclick = () => audio.paused ? audio.play() : audio.pause();
+      audio.onplay = audio.onpause = () => ic.className = audio.paused ? 'fa-solid fa-play' : 'fa-solid fa-pause';
+      audio.ontimeupdate = () => { if (audio.duration) seek.value = audio.currentTime / audio.duration * 1000; };
+      seek.oninput = () => { if (audio.duration) audio.currentTime = seek.value / 1000 * audio.duration; };
+      vol.oninput = () => audio.volume = vol.value / 100;
+      audio.onerror = () => $('ptitle').textContent = 'Audio file not found';
+    }
+  }
+
+  /* ---------- 4c. "Click to enter" splash (a click lets browsers play audio) ---------- */
+  const sp = C.splash || {}, splash = $('splash');
+  if (sp.enabled) {
+    splash.firstElementChild.textContent = sp.text || 'click to enter';
+    document.body.classList.add('locked');
+    splash.onclick = () => { splash.classList.add('out'); document.body.classList.remove('locked'); startMusic(); setTimeout(() => splash.remove(), 800); };
+  } else {
+    splash.remove(); startMusic();
+    addEventListener('pointerdown', startMusic, { once: true });   // fallback if autoplay is blocked
+  }
+
+  /* ---------- 4d. Custom cursor ---------- */
+  const K = C.cursor || {};
+  if (matchMedia('(hover:hover)').matches && K.style !== 'default') {
+    if (K.style === 'image' && K.image) {
+      const st = document.createElement('style');
+      st.textContent = `*{cursor:url("${K.image}") 0 0,auto!important}a,button,input{cursor:url("${K.image}") 0 0,pointer!important}`;
+      document.head.append(st);
+    } else {
+      document.documentElement.classList.add('cc');
+      const d = Object.assign(document.createElement('div'), { className: 'cur dot' });
+      const r = Object.assign(document.createElement('div'), { className: 'cur ring' });
+      const sz = K.size || 28; r.style.cssText = `width:${sz}px;height:${sz}px;margin:${-sz/2}px 0 0 ${-sz/2}px`;
+      document.body.append(d, r);
+      let mx = -100, my = -100, rx = -100, ry = -100;
+      addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; d.style.transform = `translate(${mx}px,${my}px)`;
+        r.classList.toggle('hot', !!e.target.closest('a,button,input,#splash')); });
+      (function f() { rx += (mx - rx) * .18; ry += (my - ry) * .18; r.style.transform = `translate(${rx}px,${ry}px)`; requestAnimationFrame(f); })();
+    }
+  }
+
+  /* ---------- 5. Typewriter ---------- */
+  if (C.showBio && C.bio && C.typewriter) {
+    const el = $('bio'), text = C.bio; let i = 0;
+    el.innerHTML = '<span id="tw"></span><span class="cursor"></span>';
+    setTimeout(function tick() {
+      $('tw').textContent = text.slice(0, ++i);
+      if (i < text.length) setTimeout(tick, 28 + Math.random() * 40);
+    }, 900);
+  }
+
+  /* ---------- 6. Views counter (stored in this browser only — cosmetic) ---------- */
+  if (C.showViews) {
+    let n = C.startingViews || 0;
+    try { n = Math.max(n, +localStorage.getItem('bio_views') || 0) + 1; localStorage.setItem('bio_views', n); } catch (e) {}
+    $('views').textContent = n.toLocaleString();
+  }
+
+  /* ---------- 7. Background photo/video + effects ---------- */
+  const BM = C.bgMedia || {};
+  if (BM.src) {
+    const box = document.createElement('div'); box.id = 'bgm'; box.style.setProperty('--dim', BM.dim ?? .5);
+    const isVid = /\.(mp4|webm|mov|m4v|ogv)(\?|#|$)/i.test(BM.src);
+    const m = document.createElement(isVid ? 'video' : 'img'); m.src = BM.src;
+    if (BM.blur) { m.style.filter = `blur(${BM.blur}px)`; m.style.transform = 'scale(1.08)'; }
+    if (isVid) { m.muted = true; m.loop = true; m.autoplay = true; m.playsInline = true; }
+    m.onerror = () => box.remove();
+    box.append(m); document.body.prepend(box);
+    if (isVid) m.play().catch(() => {});
+  }
+  const cv = $('stars');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fx = C.backgroundEffect || 'stars';
+  if (C.particles && fx !== 'none' && !reduce) {
+    const ctx = cv.getContext('2d'), N = Math.min(C.particleCount || 70, 150), dpr = Math.min(devicePixelRatio || 1, 2), R = Math.random;
+    const LEAF = ['#d97706','#b45309','#65a30d','#dc2626','#ca8a04'], PET = ['#fbcfe8','#f9a8d4','#fecdd3'];
+    const rising = ['stars','embers','bubbles'].includes(fx); let W, H;
+    const resize = () => { W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr,0,0,dpr,0,0); };
+    resize(); addEventListener('resize', resize);
+    const mk = first => {
+      const p = { x: R()*W, y: first ? R()*H : (rising ? H + 20 : -20), a: R()*6.28, s: R()*.02 + .005, v: R()*.25 + .05, r: R()*1.4 + .3, c: '#fff' };
+      if (fx === 'stars') p.c = p.r > 1.2 ? C.accentColor : '#fff';
+      if (fx === 'snow') { p.v = R() + .4; p.r = R()*2.2 + .8; }
+      if (fx === 'rain') { p.v = R()*8 + 10; p.r = R()*10 + 10; }
+      if (fx === 'leaves') { p.v = R()*.9 + .5; p.r = R()*4 + 4; p.c = LEAF[R()*LEAF.length|0]; }
+      if (fx === 'petals') { p.v = R()*.9 + .5; p.r = R()*3 + 3; p.c = PET[R()*PET.length|0]; }
+      if (fx === 'embers') { p.v = R()*.8 + .3; p.r = R()*1.8 + .6; p.c = '#fb923c'; }
+      if (fx === 'fireflies') { p.r = R()*1.5 + 1.5; p.c = '#fde047'; }
+      if (fx === 'bubbles') { p.v = R()*.6 + .2; p.r = R()*8 + 3; }
+      return p;
+    };
+    const pts = Array.from({ length: N }, () => mk(true)), TAU = 6.283;
+    (function draw() {
+      ctx.clearRect(0, 0, W, H);
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i]; p.a += p.s; ctx.fillStyle = ctx.strokeStyle = p.c; ctx.globalAlpha = 1;
+        if (fx === 'stars') { p.y -= p.v; ctx.globalAlpha = .25 + .55*Math.abs(Math.sin(p.a)); ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,TAU); ctx.fill(); }
+        else if (fx === 'snow') { p.y += p.v; p.x += Math.sin(p.a)*.5; ctx.globalAlpha = .8; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,TAU); ctx.fill(); }
+        else if (fx === 'rain') { p.y += p.v; p.x += p.v*.12; ctx.strokeStyle = 'rgba(170,190,255,.45)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x - p.r*.12, p.y - p.r); ctx.stroke(); }
+        else if (fx === 'leaves' || fx === 'petals') { p.y += p.v; p.x += Math.sin(p.a)*1.1; ctx.globalAlpha = .85; ctx.beginPath(); ctx.ellipse(p.x,p.y,p.r,p.r*.5,p.a*3,0,TAU); ctx.fill(); }
+        else if (fx === 'embers') { p.y -= p.v; p.x += Math.sin(p.a)*.4; ctx.globalAlpha = .4 + .5*Math.abs(Math.sin(p.a*2)); ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,TAU); ctx.fill(); }
+        else if (fx === 'fireflies') { p.x += Math.sin(p.a)*.5; p.y += Math.cos(p.a*1.3)*.4; const g = .5 + .5*Math.sin(p.a*3);
+          ctx.globalAlpha = .12*g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*5,0,TAU); ctx.fill(); ctx.globalAlpha = .4 + .6*g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,TAU); ctx.fill(); }
+        else if (fx === 'bubbles') { p.y -= p.v; p.x += Math.sin(p.a)*.3; ctx.globalAlpha = .35; ctx.strokeStyle = '#bae6fd'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,TAU); ctx.stroke(); }
+        if ((rising ? p.y < -20 : p.y > H + 20) || p.x > W + 20 || p.x < -20) pts[i] = mk(false);
+      }
+      requestAnimationFrame(draw);
+    })();
+  } else cv.remove();
+
+  /* ---------- 8. Gentle mouse tilt (desktop only) ---------- */
+  if (C.tiltStrength > 0 && !reduce && matchMedia('(hover:hover)').matches) {
+    const card = $('card');
+    addEventListener('mousemove', e => {
+      const x = (e.clientX / innerWidth - .5), y = (e.clientY / innerHeight - .5);
+      card.style.transform = `perspective(1000px) rotateY(${x * C.tiltStrength}deg) rotateX(${-y * C.tiltStrength}deg)`;
+    });
+    document.addEventListener('mouseleave', () => card.style.transform = '');
+  }
+})();
+</script>
+</body>
+</html>
